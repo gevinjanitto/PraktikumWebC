@@ -1,4 +1,5 @@
-<?php session_start(); 
+<?php session_start();
+error_reporting(0);
  if(!isset($_SESSION['email']))
   {
     header('location:../index.php');
@@ -65,6 +66,7 @@
          <table class="fl-table" width="50%"><thead>
        <tr><th>NO</th><th>NIM</th><th>NAMA MAHASISWA</th><th>NAMA PEMBIMBING</th></tr></thead><tbody>
        <?php
+       $email=$_SESSION['email'];
        $koneksi = mysqli_connect("localhost","root","","web") or die(mysqli_error());
       $sql1 = mysqli_query($koneksi, "SELECT * FROM dosen INNER JOIN bimbingan ON dosen.id_dsn = bimbingan.id_dsn INNER JOIN mahasiswa ON bimbingan.id_mhs = mahasiswa.id_mhs");
        $row = mysqli_fetch_assoc($sql1);
@@ -100,6 +102,8 @@
         <ul class="nav navbar-nav navbar-right">
           <li ><a href="#" id="navbar-color"><span id="clock"></span> </a></li>
           <li class="dropdown">
+            <?php $sql = mysqli_query($koneksi, "SELECT * FROM user_login WHERE email_user = '$email");
+            $row = mysqli_fetch_assoc($sql);?>
             <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="navbar-color"><img src="../img/3.png" width="20" height="20"> Welcome,<?php if($row['id_role']=='1'){echo "Admin";} else if($row['id_role']=='2'){echo "Dosen";} else{echo "Mahasiswa";}?> <span class="caret"></span></a>
             <ul class="dropdown-menu">
               <li><a href="../nasabah/data.php">Pengaturan</a></li>

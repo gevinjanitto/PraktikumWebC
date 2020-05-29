@@ -1,4 +1,5 @@
 <?php session_start(); 
+error_reporting(0);
  if(!isset($_SESSION['email']))
   {
     header('location:../index.php');
@@ -63,20 +64,25 @@
   <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
          <table class="fl-table" width="50%"><thead>
-       <tr><th>NO</th><th>NAMA KELAS</th><th>NAMA DOSEN</th><th>JAM</th><th>KUOTA</th><th>STATUS</th></tr></thead><tbody>
+       <tr><th>NO</th><th>NAMA KELAS</th><th>NAMA DOSEN</th><th>JAM</th><th>KUOTA</th><th>STATUS</th><th>AKSI</th></tr></thead><tbody>
+
        <?php
+       $email=$_SESSION['email'];
        $koneksi = mysqli_connect("localhost","root","","web") or die(mysqli_error());
       $sql1 = mysqli_query($koneksi, "SELECT * FROM kelas INNER JOIN dosen ON kelas.id_dsn = dosen.id_dsn");
        $row = mysqli_fetch_assoc($sql1);
       $no=1;
       foreach ($sql1 as $row){
+        $id = $row['nama_kelas'];
         echo "<tr>
             <td>$no</td>
             <td>".$row['nama_kelas']."</td>
             <td>".$row['nama_dsn']."</td>
             <td>".$row['jam_kelas']."</td>
             <td>".$row['kuota_kelas']."</td>
-            <td>".$row['status_kelas']."</td>";
+            <td>".$row['status_kelas']."</td>
+            <td><a href='../proses/gabung.php?id=$id'><input style='width:70px; height:25px; font-size: 10px; background-color: #324960;margin-left: 0px;' class='btn btn-md btn-success' value='Gabung'  ></a>
+            <a href='../mahasiswa/kelas_lihat.php?id=$id'><input style='width:50px; height:25px; font-size: 10px; background-color: #4fc3a1;' class='btn btn-md btn-success' value='Lihat' ></td></a>";
         $no++;
       }
       ?>
@@ -102,6 +108,8 @@
         <ul class="nav navbar-nav navbar-right">
           <li ><a href="#" id="navbar-color"><span id="clock"></span> </a></li>
           <li class="dropdown">
+            <?php $sql = mysqli_query($koneksi, "SELECT * FROM user_login WHERE email_user = '$email");
+            $row = mysqli_fetch_assoc($sql);?>
             <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="navbar-color"><img src="../img/3.png" width="20" height="20"> Welcome,<?php if($row['id_role']=='1'){echo "Admin";} else if($row['id_role']=='2'){echo "Dosen";} else{echo "Mahasiswa";}?> <span class="caret"></span></a>
             <ul class="dropdown-menu">
               <li><a href="../nasabah/data.php">Pengaturan</a></li>

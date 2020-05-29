@@ -217,7 +217,7 @@
         				session_start();
             			$_SESSION['email'] = $row['email_user'];
             			if($row['id_role'] == '1'){
-            			echo '<script language="javascript">alert("Anda berhasil LOGIN sebagai Admin!");document.location="admin/data_admin.php";</script>';}
+            			echo '<script language="javascript">alert("Anda berhasil LOGIN sebagai Admin!");document.location="admin/data.php";</script>';}
             			else if($row['id_role'] == '2'){
             			echo '<script language="javascript">alert("Anda berhasil LOGIN sebagai Dosen!");document.location="dosen/data.php";</script>';
             			}

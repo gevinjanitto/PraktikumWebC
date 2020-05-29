@@ -1,4 +1,5 @@
 <?php session_start(); 
+error_reporting(0);
  if(!isset($_SESSION['email']))
   {
     header('location:../index.php');
@@ -63,17 +64,17 @@
   <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
          <table class="fl-table" width="50%"><thead>
-       <tr><th>NO</th><th>NIM</th><th>NAMA</th><th>EMAIL</th><th>NO TELP</th><th>ALAMAT</th><th>KABUPATEN/KOTA</th><th>JENIS KELAMIN</th><th>TANGGAL LAHIR</th><th>TEMPAT LAHIR</th><th>PASSWORD</th><th>FAKULTAS</th><th>PRODI</th></tr></thead><tbody>
+       <tr><th>NO</th><th>NIDN</th><th>NAMA</th><th>EMAIL</th><th>NO TELP</th><th>ALAMAT</th><th>KABUPATEN/KOTA</th><th>JENIS KELAMIN</th><th>TANGGAL LAHIR</th><th>TEMPAT LAHIR</th><th>PASSWORD</th><th>STATUS</th></tr></thead><tbody>
        <?php
+       $email=$_SESSION['email'];
        $koneksi = mysqli_connect("localhost","root","","web") or die(mysqli_error());
       $sql1 = mysqli_query($koneksi, "SELECT * FROM user_login INNER JOIN dosen ON user_login.email_user = dosen.email_dsn");
-       $row = mysqli_fetch_assoc($sql1);
       $no=1;
       foreach ($sql1 as $row){
         $id = $row['email_user'];
         echo "<tr>
             <td>$no</td>
-            <td>".$row['nim_dsn']."</td>
+            <td>".$row['nidn_dsn']."</td>
             <td>".$row['nama_dsn']."</td>
             <td>".$row['email_dsn']."</td>
             <td>".$row['telp_dsn']."</td>
@@ -83,8 +84,7 @@
             <td>".$row['tgllahir_dsn']."</td>
             <td>".$row['tmplahir_dsn']."</td>
             <td>".$row['password_user']."</td>
-            <td>".$row['fakultas_dsn']."</td>
-            <td>".$row['prodi_dsn']."</td>";
+            <td>".$row['status_dsn']."</td>";
         $no++;
       }
       ?>
@@ -110,6 +110,8 @@
         <ul class="nav navbar-nav navbar-right">
           <li ><a href="#" id="navbar-color"><span id="clock"></span> </a></li>
           <li class="dropdown">
+            <?php $sql = mysqli_query($koneksi, "SELECT * FROM user_login WHERE email_user = '$email");
+            $row = mysqli_fetch_assoc($sql);?>
             <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="navbar-color"><img src="../img/3.png" width="20" height="20"> Welcome,<?php if($row['id_role']=='1'){echo "Admin";} else if($row['id_role']=='2'){echo "Dosen";} else{echo "Mahasiswa";}?> <span class="caret"></span></a>
             <ul class="dropdown-menu">
               <li><a href="../nasabah/data.php">Pengaturan</a></li>

@@ -1,4 +1,5 @@
 <?php session_start(); 
+error_reporting(0);
  if(!isset($_SESSION['email']))
   {
     header('location:../index.php');
@@ -62,24 +63,30 @@
 <div class="panel-body">
   <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
+        <input style='width:150px; height:50px; font-size: 15px; background-color: #324960;margin-left: 0px;' class='btn btn-md btn-success' value='Ganjil 2020/2021' >
+          <input style='width:100px; height:50px; font-size: 15px; background-color: #4fc3a1;margin-left: 0px;' class='btn btn-md btn-success' value='Tambah' ><br>
          <table class="fl-table" width="50%"><thead>
-       <tr><th>NO</th><th>SEMESTER</th><th>KODE MATAKULIAH</th><th>NAMA MATAKULIAH</th><th>JUMLAH SKS</th></tr></thead><tbody>
+       <tr><th>NO</th><th>SEMESTER</th><th>KODE MATAKULIAH</th><th>NAMA MATAKULIAH</th><th>JUMLAH SKS</th><th>ACTION</th></tr></thead><tbody>
        <?php
        $email=$_SESSION['email'];
        $koneksi = mysqli_connect("localhost","root","","web") or die(mysqli_error());
       $sql1 = mysqli_query($koneksi, "SELECT * FROM matakuliah INNER JOIN krs ON matakuliah.id_mk = krs.id_mk INNER JOIN mahasiswa ON krs.id_mhs = mahasiswa.id_mhs WHERE mahasiswa.email_mhs = '$email'");
-       $row = mysqli_fetch_assoc($sql1);
+       $row = mysqli_fetch_array($sql1);
       $no=1;
+      $sum=0;
       foreach ($sql1 as $row){
         echo "<tr>
             <td>$no</td>
             <td>".$row['semester']."</td>
             <td>".$row['kode_mk']."</td>
             <td>".$row['nama_mk']."</td>
-            <td>".$row['sks']."</td>";
+            <td><input style='width:60px; height:25px; font-size: 10px; background-color: #324960;margin-left: 0px;' class='btn btn-md btn-success' value='Edit' >
+            <input style='width:60px; height:25px; font-size: 10px; background-color: #4fc3a1;' class='btn btn-md btn-success' value='Hapus' ></td>
+            <td>".$row['sks']."</td><a style='color:white;'> ".$sum+=$row['sks']."</a>";
         $no++;
       }
       ?>
+      <tr><td colspan="5"><b>Jumlah SKS yang diambil</b></td><td><?php echo $sum;?></td></tr>
     </tbody>
     </table>
       </div>
@@ -102,6 +109,8 @@
         <ul class="nav navbar-nav navbar-right">
           <li ><a href="#" id="navbar-color"><span id="clock"></span> </a></li>
           <li class="dropdown">
+            <?php $sql = mysqli_query($koneksi, "SELECT * FROM user_login WHERE email_user = '$email");
+            $row = mysqli_fetch_assoc($sql);?>
             <a class="dropdown-toggle" data-toggle="dropdown" href="#" id="navbar-color"><img src="../img/3.png" width="20" height="20"> Welcome,<?php if($row['id_role']=='1'){echo "Admin";} else if($row['id_role']=='2'){echo "Dosen";} else{echo "Mahasiswa";}?> <span class="caret"></span></a>
             <ul class="dropdown-menu">
               <li><a href="../nasabah/data.php">Pengaturan</a></li>

@@ -63,7 +63,7 @@
   <div class="row">
       <div class="col-lg-12 col-md-12 col-sm-12 col-xs-12">
          <table class="fl-table" width="50%"><thead>
-       <tr><th>NO</th><th>NIM</th><th>NAMA</th><th>EMAIL</th><th>NO TELP</th><th>ALAMAT</th><th>KABUPATEN/KOTA</th><th>JENIS KELAMIN</th><th>TANGGAL LAHIR</th><th>TEMPAT LAHIR</th><th>PASSWORD</th><th>FAKULTAS</th><th>PRODI</th></tr></thead><tbody>
+       <tr><th>NO</th><th>NIM</th><th>NAMA</th><th>EMAIL</th><th>NO TELP</th><th>ALAMAT</th><th>KABUPATEN/KOTA</th><th>JENIS KELAMIN</th><th>TANGGAL LAHIR</th><th>TEMPAT LAHIR</th><th>PASSWORD</th><th>FAKULTAS</th><th>PRODI</th><th>STATUS</th></tr></thead><tbody>
        <?php
        $koneksi = mysqli_connect("localhost","root","","web") or die(mysqli_error());
       $sql1 = mysqli_query($koneksi, "SELECT * FROM user_login INNER JOIN mahasiswa ON user_login.email_user = mahasiswa.email_mhs");
@@ -84,7 +84,8 @@
             <td>".$row['tmplahir_mhs']."</td>
             <td>".$row['password_user']."</td>
             <td>".$row['fakultas_mhs']."</td>
-            <td>".$row['prodi_mhs']."</td>";
+            <td>".$row['prodi_mhs']."</td>
+            <td>".$row['status_mhs']."</td>";
         $no++;
       }
       ?>
