@@ -201,15 +201,41 @@
 					</div>
 					<div class="row justify-content-center">
 						<div class="col-lg-6">
-							<div id="mc_embed_signup">
-								<form target="_blank" novalidate action="https://spondonit.us12.list-manage.com/subscribe/post?u=1462626880ade1ac87bd9c93a&id=92a4423d01" method="get" class="subscription relative">
-									<input type="email" name="email" placeholder="Email address" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Email address'" required>
-									<input type="email" name="pass" placeholder="Password" onfocus="this.placeholder = ''" onblur="this.placeholder = 'Password'" required>
-									<button class="primary-btn hover d-inline-flex align-items-center"><span class="mr-10">Login</span><span class="lnr lnr-arrow-right"></span></button>
-									<div class="info"></div>
+						<?php
+						error_reporting(0);
+						$koneksi = mysqli_connect("localhost","root","","web") or die(mysqli_error());
+						if(isset($_POST['log'])){
+    					$email = $_POST['email'];
+   						$pass = $_POST['pass'];
+    					if($email == NULL || $pass == NULL){
+        				echo"<script>alert('Anda belum mengisi form!');document.location.href='index.php'</script>";
+    					}
+    					$sql = "SELECT * FROM user_login WHERE email_user='$email' AND password_user='$pass'";
+    					$result = mysqli_query($koneksi,$sql);
+    					if(mysqli_num_rows($result)>0){
+        				while($row = mysqli_fetch_assoc($result)){
+        				session_start();
+            			$_SESSION['email'] = $row['email_user'];
+            			if($row['id_role'] == '1'){
+            			echo '<script language="javascript">alert("Anda berhasil LOGIN sebagai Admin!");document.location="admin/data_admin.php";</script>';}
+            			else if($row['id_role'] == '2'){
+            			echo '<script language="javascript">alert("Anda berhasil LOGIN sebagai Dosen!");document.location="dosen/data.php";</script>';
+            			}
+            			else {
+            			echo '<script language="javascript">alert("Anda berhasil LOGIN sebagai Mahasiswa!");document.location="mahasiswa/data.php";</script>';
+            			}
+        				}
+    					}else{
+        				echo"<script>alert('Username atau password salah!');document.location.href='index.php'</script>";
+    					}
+						}
+						?>
+								<form action="" method="post" class="subscription relative">
+									<input type="text" name="email" placeholder="E-mail" required>
+									<input type="password" name="pass" placeholder="Password" required>
+									<button class="primary-btn hover d-inline-flex align-items-center" name="log"><span class="mr-10">Login</span><span class="lnr lnr-arrow-right"></span></button>
 								</form>
 								<br><a class="nav-link" data-toggle="modal" data-target="#daftar" style="cursor: pointer;">Daftar Mahasiswa?</a>
-							</div>
 						</div>
 					</div>
 				</div>
@@ -289,7 +315,6 @@
 		<script src="js/main.js"></script>
 	</body>
 </html>
- <form name="daftar" onsubmit="return checkform()" method="post" action="proses/masukdatanasabah.php">
     <div class="modal fade" id="daftar" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
       <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -300,18 +325,42 @@
             </button>
           </div>
           <div class="modal-body">
+          	<?php
+          	$koneksi = mysqli_connect("localhost","root","","web") or die(mysqli_error());
+          	if (isset($_POST['btn_simpan'])){
+          	$nim  = $_POST['nim'];
+          	$email  = $_POST['email'];
+       		$nama  = $_POST['nama'];
+  			$pass  = $_POST['pass'];
+  			$pass1  = $_POST['pass1'];
+  			$fak = "FAKULTAS MATEMATIKA DAN ILMU PENGETAHUAN ALAM";
+  			$prod = "INFORMATIKA";
+  			$id = "3";
+  			$tanggal  = date('y-m-d');
+			$sql1 = "INSERT INTO user_login (email_user, password_user, id_role, waktu_daftar) VALUES ('$email', '$pass', '$id', '$tanggal')";
+			$simpan1 = mysqli_query($koneksi, $sql1);
+			$sql = "UPDATE mahasiswa SET nim_mhs = '$nim', nama_mhs = '$nama', fakultas_mhs = '$fak', prodi_mhs = '$prod' WHERE email_mhs = '$email'";
+			$simpan = mysqli_query($koneksi, $sql);
+			if($simpan && $simpan1){
+					echo '<script language="javascript">alert("INPUT BERHASIL");document.location="index.php";</script>';
+				}
+				else{
+					echo '<script language="javascript">alert("INPUT GAGAL");</script>';
+				}}
+
+		?> <form name="daftar" onsubmit="return checkform()" method="post" action="">
+          	 <div class="mt-10">
+				 <label >NIM</label>
+				 <input type="text" name="nim" class="single-input-primary" placeholder="Masukan NIM Anda" required>
+			  </div>
    	    	  <div class="mt-10">
 		        <label>Email</label>
-				<input type="text" type="email" id="email" name="email" class="single-input-primary" placeholder="Masukan e-mail" required>
+				<input type="text" id="email" name="email" class="single-input-primary" placeholder="Masukan e-mail" required>
 		      </div>
 		      <div class="mt-10">
 				<label >Nama Lengkap</label>
 				<input type="text" name="nama" class="single-input-primary" placeholder="Masukan Nama Lengkap" required>
 		      </div>
-		      <div class="mt-10">
-				 <label >NIM</label>
-				 <input type="text" name="NIM" class="single-input-primary" placeholder="Masukan NIM Anda" required>
-			  </div>
 			 <div class="mt-10">
 				 <label >Password</label>
 				 <input type="password" name="pass" id="cekpas1" class="single-input-primary" placeholder="Masukan Password" required>
@@ -328,9 +377,32 @@
 	          </div><br><br>
           <div class="modal-footer">
             <button type="reset" class="genric-btn info radius">Reset</button>
-            <button type="submit" class="genric-btn success radius"><span class="mr-10">Daftar</span></button>
+            <button type="submit" class="genric-btn success radius" name="btn_simpan"><span class="mr-10">Daftar</span></button>
           </div>
         </div>
       </div>
     </div>
     </form>
+    <script type="text/javascript">
+    	function checkform()
+    	{
+    		var pas1 = document.getElementById("cekpas1").value;
+    		var pas2 = document.getElementById("cekpas2").value;
+    		if(pas1.length < '6')
+    		{
+    			alert("Password Input Minimal Berjumlah 6 !");
+    			return false;
+    		}
+    		
+    		else{
+    		 if(pas1==pas2)
+    		 {
+    		 	return true;
+    		 }
+    		 else{
+    		 	alert("Password Input Tidak Sama !");
+    		 	return false;
+    		 }
+    		}
+    	}
+    </script>
